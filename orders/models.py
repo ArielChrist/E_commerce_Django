@@ -18,3 +18,17 @@ class Commande(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name="commandes")
     
 
+class Produit(models.Model):
+    id = models.AutoField(primary_key=True)
+    libelle = models.CharField(max_length=100)
+    description = models.TextField(null=True)
+    prix = models.FloatField()
+    disponibilte = models.BooleanField()
+    image = models.ImageField(upload_to="images/")
+    commande = models.ForeignKey(Commande, on_delete=models.CASCADE, related_name="produits", null = True)
+
+class Categorie(models.Model):
+    libelle = models.CharField(max_length=100)
+    produits = models.ManyToManyField(Produit, null=True)
+
+
