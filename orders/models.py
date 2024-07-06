@@ -23,7 +23,7 @@ class Produit(models.Model):
     libelle = models.CharField(max_length=100)
     description = models.TextField(null=True)
     prix = models.FloatField()
-    disponibilte = models.BooleanField()
+    disponibilite = models.BooleanField()
     image = models.ImageField(upload_to="images/")
     commande = models.ForeignKey(Commande, on_delete=models.CASCADE, related_name="produits", null = True)
 
