@@ -46,3 +46,6 @@ def client_infos(request, id):
     return HttpResponse(html)
 
 
+def process_test_request():
+    print(request.headers.items())
+    return HttpResponse('Nothing special') 
