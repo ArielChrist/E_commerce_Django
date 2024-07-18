@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from .models import Produit, Client, Commande
+from .decorators import decorator
+from django.views.decorators.http import require_http_methods
 
 # Create your views here.
 
@@ -46,6 +48,6 @@ def client_infos(request, id):
     return HttpResponse(html)
 
 
+@decorator
 def process_test_request():
-    print(request.headers.items())
-    return HttpResponse('Nothing special') 
+    return HttpResponse('You can pass') 
