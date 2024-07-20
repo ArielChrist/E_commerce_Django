@@ -1,53 +1,101 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
-from .models import Produit, Client, Commande
-from .decorators import decorator
+from django.http import HttpResponse, Http404
 from django.views.decorators.http import require_http_methods
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from django.views import View
+from django.contrib.auth.decorators import login_required
+from .models import Produit, Client
+from .decorators import decorator
 
-# Create your views here.
+def index(request):
+    context  = {
+        "nom" : "Ngato",
+        "prenom" : "Ariel",
+        "date" : "20-07-24",
+        "etudiants" : ["etudiant1", "etudiant2", "etudiant3"]
+    }
+    return render(request, "orders/index.html", context)
+
 
 def hello(request):
     produits = Produit.objects.all()
-    lists = list()
-    for produit in produits:
-        lists.append(f"<li>{produit.libelle}</li>")
-
-    result = "".join(lists)
+    lists = [f"<li>{p.libelle}</li>" for p in produits]
+    
     html = f"""
         <h3>Produits</h3>
         <ul>
-          {result}
+           { "".join(lists) }
         </ul>
     """
     return HttpResponse(html)
 
 
 def client_infos(request, id):
-    client = get_object_or_404(Client, id=id)
-    commande = client.commandes.all().first()
-    produits = commande.produits.all()
-    divs = [f"""<div>
-            <p>{produit.libelle}</p>
-            <p>{produit.prix}</p>
-            <p>{produit.disponibilite}</p>
-            </div>
-         """for produit in produits]
+    try:
+        client = Client.objects.get(pk=id)
+    except Client.DoesNotExist:
+        raise Http404("Le client n'existe pas!")
+    
+    client = get_object_or_404(Client, )
+    commande = client.commandes.all()[3]
+    products = commande.produits.all()
+    divs = [f"""
+        <div> 
+            <p> {p.libelle.title()} </p>
+            <p> {p.prix} </p>
+            <p> {p.disponibilite} </p>
+            <br>
+         </div>
+     
+     """ for p in products]
+
     html = f"""
         <h3>Client</h3>
-        <p>Nom et Prenom : {client.first_name} {client.last_name}</p>
-         <h3>Commande</h3>
-        <p>Numero de commande: {commande.numero_commande}</p>
-        <p>Date de commande: {commande.create_at}</p>
+        <p>Nom et Prénom: {client.first_name} {client.last_name}</p>
+        <br>
+        <h3>Commande</h3>
+        <p>N° commande: {commande.numero_commande}</p>
+        <p>Date commande: {commande.created_at}</p>
+        <br>
         <h3>Produits</h3>
-        <div>
-            {"".join(divs)}
-        </div>
-
-           
+        {"".join(divs)}
     """
     return HttpResponse(html)
 
 
+# @require_http_methods(["POST"])
 @decorator
-def process_test_request():
-    return HttpResponse('You can pass') 
+def process_test_request(request):
+    if request.method == "POST":
+        # traitement
+        pass
+    
+    if request.method == "PUT":
+        # traitement
+        pass
+
+    if request.method == "DELETE":
+        # traitement
+        pass
+    
+    return HttpResponse('You can pass')
+
+
+class HomeView(View):
+
+    def get(self, request):
+        return HttpResponse('This is get method')
+
+    @method_decorator(csrf_exempt)
+    def post(self, request):
+        print(request.POST)
+        return HttpResponse('This is post method')
+
+    @method_decorator(csrf_exempt)
+    def put(self, request):
+        return HttpResponse('This is put method')
+
+    @method_decorator(csrf_exempt)
+    def delete(self, request):
+        return HttpResponse('This is delete method')
