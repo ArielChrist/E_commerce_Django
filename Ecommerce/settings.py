@@ -43,7 +43,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'orders.middlewares.HeaderMiddleware',
+    'orders.middlewares.BlockScrapingToolsMiddleware',
+    'orders.middlewares.HeaderMiddleware', # Middleware que nous avons défini
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

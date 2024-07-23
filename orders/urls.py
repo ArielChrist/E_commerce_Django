@@ -1,9 +1,11 @@
 from django.urls import path
-from .views import hello, client_infos, process_test_request, HomeView, index
+from .views import hello, client_infos, process_test_request, HomeView, index, detail_client
 
 urlpatterns = [
     path('hello/', hello),
     path('commande-infos/<int:id>/', client_infos),
     path('test-request/', process_test_request),
     path('cb-view/', HomeView.as_view()),
-    path('home/', index)]
+    path('home/', index),
+    path('commande/<int:id>/', detail_client),
+]
