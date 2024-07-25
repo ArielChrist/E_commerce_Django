@@ -71,7 +71,7 @@ def process_test_request(request):
     if request.method == "POST":
         # traitement
         pass
-    
+        
     if request.method == "PUT":
         # traitement
         pass
@@ -108,16 +108,8 @@ def list_products(request):
     return render(request, 'orders/list_products.html', {'produits': products})
 
 
-def detail_client(request, id):
-    client = get_object_or_404(Client, pk=id)
+def get_client(request,id):
+    client = get_object_or_404(Client,pk=id)
     commandes = client.commandes.all()
-    produits = []
-    for commande in commandes:
-        for produit in commande.produits.all():
-            produits.append(produit)
-    context = {
-        'client' : client,
-        'commande' : commande,
-        'produits' : produits,
-    }
-    return render(request, 'orders/detail_client.html', context)
+    produits = [produit for commande in commandes for produit in commande.produits.all()]
+    return render(request,'orders/catalog.html',{'client': client, 'commandes': commandes, 'produits': produits})
